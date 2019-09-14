@@ -1,0 +1,15 @@
+ion-card {
+  ion-label {
+    ion-text {
+      white-space: normal;
+    }
+  }
+  &:nth-child(n) {
+    .indicator {
+      background: var(--ion-color-secondary-tint);
+    }
+    ion-icon {
+      color: var(--ion-color-secondary-tint);
+    }
+  }
+}

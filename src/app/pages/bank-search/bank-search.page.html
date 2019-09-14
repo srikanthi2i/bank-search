@@ -1,0 +1,72 @@
+<ion-header>
+  <ion-toolbar color="secondary">
+    <ion-title>Bank Search</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-lg="4" size-md="6">
+        <ion-item lines="none">
+          <ion-label>SELECT CITY</ion-label>
+          <ion-select placeholder="Select city" [(ngModel)]="city" (ionChange)="fetchBanksByCity()">
+            <ion-select-option value="BANGALORE">BANGALORE</ion-select-option>
+            <ion-select-option value="MUMBAI">MUMBAI</ion-select-option>
+            <ion-select-option value="CHENNAI">CHENNAI</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12">
+        <ion-item color="secondary" lines="none">
+          <ion-searchbar mode="ios" class="ion-no-padding" [(ngModel)]="searchText" (ionChange)="filterBanks()" debounce="700"></ion-searchbar>
+        </ion-item>
+      </ion-col>
+      <ion-col size="12">
+        <ion-list>
+          <ng-container *ngIf="!!loader else listBanks">
+            <ion-list-header>
+              <ion-skeleton-text animated style="width: 30%"></ion-skeleton-text>
+            </ion-list-header>
+            <ion-card class="ion-margin-horizontal" *ngFor="let bank of [1,2,3,4,5,6]">
+              <ion-item>
+                <ion-icon size="large" name="wallet" slot="start"></ion-icon>
+                <ion-label>
+                  <div class="sm-font"><ion-skeleton-text animated style="width: 20%"></ion-skeleton-text></div>
+                  <div><ion-text color="dark"><ion-skeleton-text animated style="width: 60%"></ion-skeleton-text></ion-text></div>
+                  <div class="md-font ion-margin-top"><ion-skeleton-text animated style="width: 30%"></ion-skeleton-text></div>
+                </ion-label>
+              </ion-item>
+              <div class="ion-text-end indicator">
+                <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+              </div>
+            </ion-card>
+          </ng-container>
+          <ng-template #listBanks>
+            <ion-list-header *ngIf="searchedBanks.length">Search results</ion-list-header>
+            <ion-list-header *ngIf="!searchedBanks.length && city">No results found</ion-list-header>
+            <ion-card class="ion-margin-horizontal" *ngFor="let bank of searchedBanks">
+              <ion-item color="light" lines="none">
+                <ion-icon size="large" name="wallet" slot="start"></ion-icon>
+                <ion-label color="medium" class="ion-text-uppercase">
+                  <div class="sm-font">Bank</div>
+                  <div><ion-text color="dark">{{ bank.bank_name }}</ion-text></div>
+                  <div class="md-font ion-margin-top">IFSC: <ion-text class="ion-text-bold" color="dark">{{ bank.ifsc }}</ion-text></div>
+                </ion-label>
+              </ion-item>
+              <div class="ion-text-end indicator">
+                <ion-text class="ion-padding-end md-font ion-text-bold" color="dark">Branch: {{ bank.branch }}</ion-text>
+              </div>
+            </ion-card>
+          </ng-template>
+          <ion-infinite-scroll *ngIf="city && searchedBanks.length" threshold="100px" (ionInfinite)="loadData($event)">
+            <ion-infinite-scroll-content
+              loadingSpinner="bubbles"
+              loadingText="Loading more data...">
+            </ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
